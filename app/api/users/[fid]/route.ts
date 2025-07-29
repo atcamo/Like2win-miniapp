@@ -33,11 +33,12 @@ const updateUserSchema = z.object({
 // GET /api/users/[fid]
 export async function GET(
   request: NextRequest,
-  { params }: { params: { fid: string } }
+  { params }: { params: Promise<{ fid: string }> }
 ) {
   try {
-    // Validate FID parameter
-    const validation = fidSchema.safeParse(params.fid);
+    // Await params and validate FID parameter
+    const resolvedParams = await params;
+    const validation = fidSchema.safeParse(resolvedParams.fid);
     if (!validation.success) {
       return NextResponse.json(
         { 

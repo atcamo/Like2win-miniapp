@@ -12,11 +12,12 @@ const addressSchema = z.string().regex(/^0x[a-fA-F0-9]{40}$/, 'Invalid Ethereum 
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { address: string } }
+  { params }: { params: Promise<{ address: string }> }
 ) {
   try {
-    // Validate address parameter
-    const validation = addressSchema.safeParse(params.address);
+    // Await params and validate address parameter
+    const resolvedParams = await params;
+    const validation = addressSchema.safeParse(resolvedParams.address);
     if (!validation.success) {
       return NextResponse.json(
         { 
