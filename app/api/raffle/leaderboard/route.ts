@@ -10,8 +10,8 @@ import { z } from 'zod';
 
 // Validation schema
 const leaderboardQuerySchema = z.object({
-  limit: z.string().optional().transform(Number).pipe(z.number().min(1).max(100)).default(20),
-  offset: z.string().optional().transform(Number).pipe(z.number().min(0)).default(0),
+  limit: z.string().optional().default('20').transform(Number).pipe(z.number().min(1).max(100)),
+  offset: z.string().optional().default('0').transform(Number).pipe(z.number().min(0)),
   raffle_id: z.string().uuid().optional(),
 });
 
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     const { limit, offset, raffle_id } = validation.data;
 
     let leaderboardQuery: string;
-    let queryParams: any[];
+    let queryParams: (string | number)[];
 
     if (raffle_id) {
       // Get leaderboard for specific raffle
@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
 
     // Get total count for pagination
     let totalCountQuery: string;
-    let countParams: any[];
+    let countParams: string[];
 
     if (raffle_id) {
       totalCountQuery = 'SELECT COUNT(*) as total FROM raffle_entries WHERE raffle_id = $1';

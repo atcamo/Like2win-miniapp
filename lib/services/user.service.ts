@@ -101,7 +101,7 @@ export class UserService {
    * @param updateData - Data to update
    * @returns Promise resolving to updated user
    */
-  static async updateUser(fid: number, updateData: any): Promise<ApiResponse<User>> {
+  static async updateUser(fid: number, updateData: Record<string, any>): Promise<ApiResponse<User>> {
     try {
       // Validate input data
       const validatedData = validateAndParse(UserSchemas.update, updateData);
@@ -118,7 +118,7 @@ export class UserService {
 
       // Build dynamic update query
       const updateFields = Object.keys(validatedData).filter(
-        key => validatedData[key] !== undefined
+        key => (validatedData as Record<string, any>)[key] !== undefined
       );
 
       if (updateFields.length === 0) {
@@ -132,7 +132,7 @@ export class UserService {
         .map((field, index) => `${field} = $${index + 2}`)
         .join(', ');
 
-      const values = [fid, ...updateFields.map(field => validatedData[field])];
+      const values = [fid, ...updateFields.map(field => (validatedData as Record<string, any>)[field])];
 
       const result = await query<User>(
         `UPDATE users 

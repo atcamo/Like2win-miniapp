@@ -31,17 +31,17 @@ export const PaginationSchema = z.object({
   page: z
     .string()
     .optional()
+    .default('1')
     .transform(val => val ? parseInt(val) : 1)
-    .refine(val => val > 0, { message: 'Page must be greater than 0' })
-    .default(1),
+    .refine(val => val > 0, { message: 'Page must be greater than 0' }),
   limit: z
     .string()
     .optional()
+    .default('20')
     .transform(val => val ? parseInt(val) : 20)
     .refine(val => val > 0 && val <= 100, { 
       message: 'Limit must be between 1 and 100' 
-    })
-    .default(20),
+    }),
   sortBy: z
     .string()
     .optional()
@@ -601,7 +601,7 @@ export class ValidationError extends Error {
 export const EnvironmentSchema = z.object({
   // Database
   DATABASE_HOST: z.string().default('localhost'),
-  DATABASE_PORT: z.string().transform(val => parseInt(val)).default(5432),
+  DATABASE_PORT: z.string().default('5432').transform(val => parseInt(val)),
   DATABASE_NAME: z.string().default('like2win'),
   DATABASE_USER: z.string().default('postgres'),
   DATABASE_PASSWORD: z.string(),
@@ -615,7 +615,7 @@ export const EnvironmentSchema = z.object({
   
   // Web3
   NEXT_PUBLIC_BASE_RPC_URL: z.string().url().default('https://mainnet.base.org'),
-  NEXT_PUBLIC_BASE_CHAIN_ID: z.string().transform(val => parseInt(val)).default(8453),
+  NEXT_PUBLIC_BASE_CHAIN_ID: z.string().default('8453').transform(val => parseInt(val)),
   NEXT_PUBLIC_WC_PROJECT_ID: z.string(),
   
   // Farcaster
@@ -631,6 +631,6 @@ export const EnvironmentSchema = z.object({
   // Optional
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
-  DEBUG: z.string().transform(val => val === 'true').default(false),
-  USE_MOCK_DATA: z.string().transform(val => val === 'true').default(false),
+  DEBUG: z.string().default('false').transform(val => val === 'true'),
+  USE_MOCK_DATA: z.string().default('false').transform(val => val === 'true'),
 });
