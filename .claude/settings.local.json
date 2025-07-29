@@ -24,7 +24,15 @@
       "Bash(gh repo view:*)",
       "Bash(where gh)",
       "Bash(winget:*)",
-      "Bash(git remote:*)"
+      "Bash(git remote:*)",
+      "Bash(vercel ls:*)",
+      "WebFetch(domain:my-minikit-df6mfuipl-atilioacm-gmailcoms-projects.vercel.app)",
+      "Bash(curl:*)",
+      "Bash(npm test)",
+      "Bash(npm run:*)",
+      "Bash(vercel:*)",
+      "WebFetch(domain:like2win-miniapp.vercel.app)",
+      "WebFetch(domain:my-minikit-pme4rrebp-atilioacm-gmailcoms-projects.vercel.app)"
     ],
     "deny": []
   }

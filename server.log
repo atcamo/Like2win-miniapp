@@ -1,0 +1,26 @@
+ ⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::8080
+    at <unknown> (Error: listen EADDRINUSE: address already in use :::8080)
+    at new Promise (<anonymous>) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 8080
+}
+node:events:502
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: EPERM: operation not permitted, open 'C:\Users\calde\like-to-raffle\my-minikit-app\.next\trace'
+Emitted 'error' event on WriteStream instance at:
+    at emitErrorNT (node:internal/streams/destroy:169:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:128:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'open',
+  path: 'C:\\Users\\calde\\like-to-raffle\\my-minikit-app\\.next\\trace'
+}
+
+Node.js v20.19.2
