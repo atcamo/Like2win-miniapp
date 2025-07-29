@@ -18,10 +18,10 @@ const leaderboardQuerySchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const queryParams = Object.fromEntries(searchParams.entries());
+    const requestParams = Object.fromEntries(searchParams.entries());
     
     // Validate query parameters
-    const validation = leaderboardQuerySchema.safeParse(queryParams);
+    const validation = leaderboardQuerySchema.safeParse(requestParams);
     if (!validation.success) {
       return NextResponse.json(
         { 

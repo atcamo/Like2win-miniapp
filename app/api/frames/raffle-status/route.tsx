@@ -4,7 +4,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { getFrameMetadata } from '@coinbase/onchainkit/frame';
+import { getFrameMetadata } from '@coinbase/onchainkit';
 import { query } from '@/lib/database';
 
 const FRAME_BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL 
