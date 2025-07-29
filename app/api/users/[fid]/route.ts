@@ -134,11 +134,12 @@ export async function GET(
 // PUT /api/users/[fid] - Update existing user
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { fid: string } }
+  { params }: { params: Promise<{ fid: string }> }
 ) {
   try {
-    // Validate FID parameter
-    const fidValidation = fidSchema.safeParse(params.fid);
+    // Await params and validate FID parameter
+    const resolvedParams = await params;
+    const fidValidation = fidSchema.safeParse(resolvedParams.fid);
     if (!fidValidation.success) {
       return NextResponse.json(
         { 
@@ -228,11 +229,12 @@ export async function PUT(
 // POST /api/users/[fid] - Create or update user (upsert)
 export async function POST(
   request: NextRequest,
-  { params }: { params: { fid: string } }
+  { params }: { params: Promise<{ fid: string }> }
 ) {
   try {
-    // Validate FID parameter
-    const fidValidation = fidSchema.safeParse(params.fid);
+    // Await params and validate FID parameter
+    const resolvedParams = await params;
+    const fidValidation = fidSchema.safeParse(resolvedParams.fid);
     if (!fidValidation.success) {
       return NextResponse.json(
         { 
