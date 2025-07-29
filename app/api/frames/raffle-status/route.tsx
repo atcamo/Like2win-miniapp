@@ -4,8 +4,45 @@
  */
 
 import { NextRequest } from 'next/server';
-import { getFrameMetadata } from '@coinbase/onchainkit';
 import { query } from '@/lib/database';
+
+// Frame metadata generation helper
+function getFrameMetadata(config: {
+  buttons: Array<{ label: string; action?: string; target?: string }>;
+  image: { src: string; aspectRatio?: string } | string;
+  postUrl?: string;
+  input?: { text: string };
+}) {
+  const { buttons, image, postUrl, input } = config;
+  const imageUrl = typeof image === 'string' ? image : image.src;
+  const aspectRatio = typeof image === 'object' ? image.aspectRatio : '1.91:1';
+  
+  let meta = '';
+  meta += `<meta name="fc:frame" content="vNext" />`;
+  meta += `<meta name="fc:frame:image" content="${imageUrl}" />`;
+  meta += `<meta name="fc:frame:image:aspect_ratio" content="${aspectRatio || '1.91:1'}" />`;
+  
+  if (postUrl) {
+    meta += `<meta name="fc:frame:post_url" content="${postUrl}" />`;
+  }
+  
+  if (input) {
+    meta += `<meta name="fc:frame:input:text" content="${input.text}" />`;
+  }
+  
+  buttons.forEach((button, index) => {
+    const buttonIndex = index + 1;
+    meta += `<meta name="fc:frame:button:${buttonIndex}" content="${button.label}" />`;
+    if (button.action) {
+      meta += `<meta name="fc:frame:button:${buttonIndex}:action" content="${button.action}" />`;
+    }
+    if (button.target) {
+      meta += `<meta name="fc:frame:button:${buttonIndex}:target" content="${button.target}" />`;
+    }
+  });
+  
+  return meta;
+}
 
 const FRAME_BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL 
   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` 
