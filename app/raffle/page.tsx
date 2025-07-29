@@ -4,12 +4,13 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RaffleStatus } from '@/app/components/raffle/RaffleStatus';
 import { RaffleLeaderboard } from '@/app/components/raffle/RaffleLeaderboard';
 import { PostParticipation } from '@/app/components/raffle/PostParticipation';
 import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
+import { Logo } from '@/app/components/ui/Logo';
 import { 
   TrophyIcon,
   TicketIcon,
@@ -75,6 +76,11 @@ const mockPosts = [
 export default function RafflePage() {
   const [selectedTab, setSelectedTab] = useState<'overview' | 'leaderboard' | 'posts'>('overview');
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const handleParticipationComplete = (result: any) => {
     console.log('Participation completed:', result);
@@ -87,18 +93,28 @@ export default function RafflePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-white/20 rounded-xl">
-              <TrophyIcon className="w-8 h-8" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold">Like2Win Raffle Dashboard</h1>
-              <p className="text-amber-100 mt-1">
-                Track your participation and win $DEGEN rewards!
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-gray-900 dark:via-gray-900 dark:to-amber-900/20">
+      {/* Enhanced Header */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <div className="text-center">
+              {/* Logo with Trophy badge */}
+              <div className="flex justify-center mb-6">
+                <Logo 
+                  size="lg" 
+                  badge={<TrophyIcon className="w-4 h-4 text-white" />}
+                />
+              </div>
+              
+              <h1 className="text-4xl sm:text-5xl font-bold mb-4">
+                <span className="bg-gradient-to-r from-amber-600 via-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                  Raffle Dashboard
+                </span>
+              </h1>
+              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                Track your participation and compete for $DEGEN rewards in our transparent, fair raffles
               </p>
             </div>
           </div>
@@ -106,63 +122,78 @@ export default function RafflePage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="p-6 text-center">
-            <div className="mx-auto w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-3">
-              <TicketIcon className="w-6 h-6 text-amber-600" />
+        {/* Enhanced Stats Cards */}
+        <div className={`grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <Card className="p-6 text-center group hover:shadow-2xl transition-all duration-300 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-amber-200/30">
+            <div className="mx-auto w-14 h-14 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <TicketIcon className="w-7 h-7 text-white" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">47</div>
-            <div className="text-sm text-gray-600">Your Tickets</div>
+            <div className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent mb-1">47</div>
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Your Tickets</div>
           </Card>
           
-          <Card className="p-6 text-center">
-            <div className="mx-auto w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3">
-              <UsersIcon className="w-6 h-6 text-blue-600" />
+          <Card className="p-6 text-center group hover:shadow-2xl transition-all duration-300 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-blue-200/30">
+            <div className="mx-auto w-14 h-14 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <UsersIcon className="w-7 h-7 text-white" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">23</div>
-            <div className="text-sm text-gray-600">Participants</div>
+            <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-1">2,347</div>
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Participants</div>
           </Card>
           
-          <Card className="p-6 text-center">
-            <div className="mx-auto w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-3">
-              <SparklesIcon className="w-6 h-6 text-green-600" />
+          <Card className="p-6 text-center group hover:shadow-2xl transition-all duration-300 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-green-200/30">
+            <div className="mx-auto w-14 h-14 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <SparklesIcon className="w-7 h-7 text-white" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">1,850</div>
-            <div className="text-sm text-gray-600">$DEGEN Pool</div>
+            <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1">15,000</div>
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">$DEGEN Pool</div>
           </Card>
           
-          <Card className="p-6 text-center">
-            <div className="mx-auto w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-3">
-              <TrophyIcon className="w-6 h-6 text-purple-600" />
+          <Card className="p-6 text-center group hover:shadow-2xl transition-all duration-300 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg border border-purple-200/30">
+            <div className="mx-auto w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+              <TrophyIcon className="w-7 h-7 text-white" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">12.4%</div>
-            <div className="text-sm text-gray-600">Win Chance</div>
+            <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-1">2.0%</div>
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Win Chance</div>
           </Card>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex space-x-1 mb-8 bg-gray-100 p-1 rounded-lg">
+        {/* Enhanced Navigation Tabs */}
+        <div className={`flex space-x-2 mb-8 p-2 bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg rounded-2xl border border-amber-200/30 shadow-lg transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <Button
-            variant={selectedTab === 'overview' ? 'primary' : 'ghost'}
+            variant={selectedTab === 'overview' ? 'gradient' : 'ghost'}
             onClick={() => setSelectedTab('overview')}
-            className="flex-1"
+            className={`flex-1 rounded-xl font-medium transition-all duration-300 ${
+              selectedTab === 'overview' 
+                ? 'shadow-lg transform scale-105' 
+                : 'hover:bg-amber-50 dark:hover:bg-gray-700'
+            }`}
           >
+            <InformationCircleIcon className="w-4 h-4 mr-2" />
             Overview
           </Button>
           <Button
-            variant={selectedTab === 'leaderboard' ? 'primary' : 'ghost'}
+            variant={selectedTab === 'leaderboard' ? 'gradient' : 'ghost'}
             onClick={() => setSelectedTab('leaderboard')}
-            className="flex-1"
+            className={`flex-1 rounded-xl font-medium transition-all duration-300 ${
+              selectedTab === 'leaderboard' 
+                ? 'shadow-lg transform scale-105' 
+                : 'hover:bg-amber-50 dark:hover:bg-gray-700'
+            }`}
           >
+            <TrophyIcon className="w-4 h-4 mr-2" />
             Leaderboard
           </Button>
           <Button
-            variant={selectedTab === 'posts' ? 'primary' : 'ghost'}
+            variant={selectedTab === 'posts' ? 'gradient' : 'ghost'}
             onClick={() => setSelectedTab('posts')}
-            className="flex-1"
+            className={`flex-1 rounded-xl font-medium transition-all duration-300 ${
+              selectedTab === 'posts' 
+                ? 'shadow-lg transform scale-105' 
+                : 'hover:bg-amber-50 dark:hover:bg-gray-700'
+            }`}
           >
-            Eligible Posts
+            <TicketIcon className="w-4 h-4 mr-2" />
+            Posts
           </Button>
         </div>
 
