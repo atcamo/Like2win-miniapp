@@ -8,6 +8,28 @@ import { query, transaction } from '@/lib/database';
 import { ParticipateRequest, ParticipationCheck } from '@/lib/database/models';
 import { z } from 'zod';
 
+// Helper function to get client IP from NextRequest
+function getClientIP(request: NextRequest): string | null {
+  // Check various headers for the real IP
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  const realIP = request.headers.get('x-real-ip');
+  const cfConnectingIP = request.headers.get('cf-connecting-ip');
+  
+  if (forwardedFor) {
+    return forwardedFor.split(',')[0].trim();
+  }
+  
+  if (realIP) {
+    return realIP;
+  }
+  
+  if (cfConnectingIP) {
+    return cfConnectingIP;
+  }
+  
+  return null;
+}
+
 // Validation schema
 const participateSchema = z.object({
   user_fid: z.number().positive(),
@@ -186,7 +208,7 @@ export async function POST(request: NextRequest) {
               tickets_earned: ticketsEarned,
               raffle_id: post.raffle_id
             }),
-            request.ip || null
+            getClientIP(request)
           ]
         );
       }
