@@ -8,6 +8,28 @@ import { query, transaction } from '@/lib/database';
 import { ActivePost, CreatePostRequest } from '@/lib/database/models';
 import { z } from 'zod';
 
+// Helper function to get client IP from NextRequest
+function getClientIP(request: NextRequest): string | null {
+  // Check various headers for the real IP
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  const realIP = request.headers.get('x-real-ip');
+  const cfConnectingIP = request.headers.get('cf-connecting-ip');
+  
+  if (forwardedFor) {
+    return forwardedFor.split(',')[0].trim();
+  }
+  
+  if (realIP) {
+    return realIP;
+  }
+  
+  if (cfConnectingIP) {
+    return cfConnectingIP;
+  }
+  
+  return null;
+}
+
 // Validation schemas
 const activePostsQuerySchema = z.object({
   limit: z.string().optional().default('10').transform(Number).pipe(z.number().min(1).max(50)),
@@ -216,7 +238,7 @@ export async function POST(request: NextRequest) {
             author_fid: postData.author_fid,
             raffle_id: activeRaffleId
           }),
-          request.ip || null
+          getClientIP(request)
         ]
       );
 
