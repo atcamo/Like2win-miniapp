@@ -10,9 +10,9 @@ import { z } from 'zod';
 
 // Validation schemas
 const activePostsQuerySchema = z.object({
-  limit: z.string().optional().transform(Number).pipe(z.number().min(1).max(50)).default(10),
-  offset: z.string().optional().transform(Number).pipe(z.number().min(0)).default(0),
-  fid: z.string().optional().transform(Number).pipe(z.number().positive()).optional(),
+  limit: z.string().optional().default('10').transform(Number).pipe(z.number().min(1).max(50)),
+  offset: z.string().optional().default('0').transform(Number).pipe(z.number().min(0)),
+  fid: z.string().optional().transform((val) => val ? Number(val) : undefined).pipe(z.number().positive().optional()),
 });
 
 const createPostSchema = z.object({
