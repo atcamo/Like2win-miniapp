@@ -23,19 +23,42 @@ export default function MiniApp() {
   useEffect(() => {
     const initializeMiniApp = async () => {
       try {
-        // Initialize Farcaster SDK
-        const context = await sdk.context;
-        if (context?.user) {
-          setUser(context.user);
+        console.log('Initializing MiniApp...');
+        
+        // Llamar ready() inmediatamente para evitar splash screen
+        if (sdk?.actions?.ready) {
+          await sdk.actions.ready();
+          console.log('SDK ready() called successfully');
+        } else {
+          console.error('SDK actions.ready() not available');
         }
         
-        // Signal that the app is ready
-        await sdk.actions.ready();
+        // Initialize Farcaster SDK context
+        try {
+          const context = await sdk.context;
+          console.log('SDK context:', context);
+          if (context?.user) {
+            setUser(context.user);
+          }
+        } catch (contextError) {
+          console.error('Failed to get SDK context:', contextError);
+        }
         
         setIsLoading(false);
         setTimeout(() => setIsVisible(true), 100);
       } catch (error) {
         console.error("Failed to initialize mini app:", error);
+        
+        // Intentar llamar ready() incluso si hay errores
+        try {
+          if (sdk?.actions?.ready) {
+            await sdk.actions.ready();
+            console.log('SDK ready() called after error');
+          }
+        } catch (readyError) {
+          console.error('Failed to call ready() after error:', readyError);
+        }
+        
         setIsLoading(false);
       }
     };

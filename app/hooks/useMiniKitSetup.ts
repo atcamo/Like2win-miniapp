@@ -11,12 +11,22 @@ export function useMiniKitSetup() {
   const [frameAdded, setFrameAdded] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
-  // Inicializar frame
+  // Inicializar frame y llamar ready
   useEffect(() => {
     if (!isFrameReady) {
       setFrameReady();
     } else {
       setIsReady(true);
+      
+      // Llamar sdk.actions.ready() para señalar que la app está lista
+      if (typeof window !== 'undefined' && (window as any).sdk?.actions?.ready) {
+        try {
+          (window as any).sdk.actions.ready();
+          console.log('SDK ready called successfully');
+        } catch (error) {
+          console.error('Error calling sdk.actions.ready:', error);
+        }
+      }
     }
   }, [isFrameReady, setFrameReady]);
 
