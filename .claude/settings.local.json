@@ -33,7 +33,10 @@
       "Bash(vercel:*)",
       "WebFetch(domain:like2win-miniapp.vercel.app)",
       "WebFetch(domain:my-minikit-pme4rrebp-atilioacm-gmailcoms-projects.vercel.app)",
-      "Bash(gh repo create:*)"
+      "Bash(gh repo create:*)",
+      "Bash(npm ls:*)",
+      "WebFetch(domain:onchainkit.xyz)",
+      "WebFetch(domain:docs.base.org)"
     ],
     "deny": []
   }

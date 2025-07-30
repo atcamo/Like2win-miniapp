@@ -130,49 +130,19 @@ export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement>
  * @param props - CardTitle component props
  * @returns JSX element
  */
-export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
-  ({ className, level = 3, children, ...props }, ref) => {
-    // Simplified approach to avoid complex union types
-    if (level === 1) {
-      return (
-        <h1 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
-          {children}
-        </h1>
-      );
-    }
-    if (level === 2) {
-      return (
-        <h2 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
-          {children}
-        </h2>
-      );
-    }
-    if (level === 4) {
-      return (
-        <h4 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
-          {children}
-        </h4>
-      );
-    }
-    if (level === 5) {
-      return (
-        <h5 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
-          {children}
-        </h5>
-      );
-    }
-    if (level === 6) {
-      return (
-        <h6 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
-          {children}
-        </h6>
-      );
-    }
-    // Default to h3
+export const CardTitle = React.forwardRef<HTMLDivElement, Omit<CardTitleProps, 'level'>>(
+  ({ className, children, ...props }, ref) => {
     return (
-      <h3 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
+      <div
+        ref={ref}
+        className={cn(
+          'text-2xl font-semibold leading-none tracking-tight',
+          className
+        )}
+        {...props}
+      >
         {children}
-      </h3>
+      </div>
     );
   }
 );
@@ -305,7 +275,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   return (
     <Card className={cn('p-6', className)}>
       <div className="flex items-center justify-between space-y-0 pb-2">
-        <CardTitle level={4} className="text-sm font-medium">
+        <CardTitle className="text-sm font-medium">
           {title}
         </CardTitle>
         {icon && <div className="h-4 w-4">{icon}</div>}

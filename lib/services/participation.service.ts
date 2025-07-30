@@ -18,7 +18,24 @@ import {
   Post,
   Raffle,
 } from '@/lib/database/types';
-import { ParticipationSchemas, validateAndParse } from '@/lib/validation/schemas';
+import { validateAndParse } from '@/lib/validation/schemas';
+import { z } from 'zod';
+
+// Define participation schema inline
+const participateSchema = z.object({
+  user_fid: z.number().positive(),
+  post_cast_hash: z.string().min(1),
+  engagement_type: z.enum(['like', 'like_comment', 'like_comment_recast']),
+  engagement_data: z.object({
+    has_liked: z.boolean().default(false),
+    has_commented: z.boolean().default(false),
+    has_recasted: z.boolean().default(false),
+    like_hash: z.string().optional(),
+    comment_hash: z.string().optional(),
+    comment_text: z.string().optional(),
+    recast_hash: z.string().optional(),
+  }).default({}),
+});
 import { UserService } from './user.service';
 
 /**
@@ -49,7 +66,7 @@ export class ParticipationService {
   static async participateInPost(participationData: any): Promise<ApiResponse<ParticipationResult>> {
     try {
       // Validate input data
-      const validatedData = validateAndParse(ParticipationSchemas.participate, participationData);
+      const validatedData = validateAndParse(participateSchema, participationData);
 
       return await withTransaction(async (client) => {
         // Get user information
@@ -102,7 +119,7 @@ export class ParticipationService {
         const engagementValidation = this.validateEngagementRequirements(
           user,
           post,
-          validatedData.engagement_data
+          validatedData.engagement_data || {}
         );
 
         if (!engagementValidation.isValid) {
