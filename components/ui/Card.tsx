@@ -132,19 +132,47 @@ export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement>
  */
 export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
   ({ className, level = 3, children, ...props }, ref) => {
-    const Heading = `h${level}` as keyof JSX.IntrinsicElements;
-    
+    // Simplified approach to avoid complex union types
+    if (level === 1) {
+      return (
+        <h1 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
+          {children}
+        </h1>
+      );
+    }
+    if (level === 2) {
+      return (
+        <h2 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
+          {children}
+        </h2>
+      );
+    }
+    if (level === 4) {
+      return (
+        <h4 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
+          {children}
+        </h4>
+      );
+    }
+    if (level === 5) {
+      return (
+        <h5 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
+          {children}
+        </h5>
+      );
+    }
+    if (level === 6) {
+      return (
+        <h6 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
+          {children}
+        </h6>
+      );
+    }
+    // Default to h3
     return (
-      <Heading
-        ref={ref}
-        className={cn(
-          'text-2xl font-semibold leading-none tracking-tight',
-          className
-        )}
-        {...(props as any)}
-      >
+      <h3 ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props}>
         {children}
-      </Heading>
+      </h3>
     );
   }
 );
