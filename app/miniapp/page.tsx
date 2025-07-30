@@ -12,6 +12,7 @@ export default function MiniApp() {
   const [isLoading, setIsLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [isFarcasterContext, setIsFarcasterContext] = useState(false);
   const [raffleStats, setRaffleStats] = useState({
     currentPrize: "15,000",
     participantsCount: "2,400+",
@@ -29,28 +30,41 @@ export default function MiniApp() {
         console.log('🔍 Current URL:', window.location.href);
         console.log('🔍 User Agent:', navigator.userAgent);
         
-        // Load interface first, then call ready()
+        // Check if we're in Farcaster context
+        const isInFarcaster = window.location.href.includes('farcaster.xyz') || 
+                             window.location.href.includes('warpcast.com') ||
+                             navigator.userAgent.includes('Farcaster') ||
+                             window.parent !== window; // Check if in iframe
+        
+        console.log('🔍 Is in Farcaster context:', isInFarcaster);
+        setIsFarcasterContext(isInFarcaster);
+        
+        // Load interface first
         setIsLoading(false);
         
-        // Small delay to ensure DOM is fully rendered
-        await new Promise(resolve => setTimeout(resolve, 50));
-        
-        if (!isMounted) return;
-        
-        // Now call ready() after interface is loaded
-        console.log('📞 Calling SDK ready()...');
-        await sdk.actions.ready();
-        console.log('✅ SDK ready() called successfully - splash screen should be hidden');
-        
-        // Get user context after ready() call
-        try {
-          const context = await sdk.context;
-          console.log('👤 SDK context:', context);
-          if (context?.user && isMounted) {
-            setUser(context.user);
+        if (isInFarcaster) {
+          // Small delay to ensure DOM is fully rendered
+          await new Promise(resolve => setTimeout(resolve, 50));
+          
+          if (!isMounted) return;
+          
+          // Now call ready() after interface is loaded
+          console.log('📞 Calling SDK ready()...');
+          await sdk.actions.ready();
+          console.log('✅ SDK ready() called successfully - splash screen should be hidden');
+          
+          // Get user context after ready() call
+          try {
+            const context = await sdk.context;
+            console.log('👤 SDK context:', context);
+            if (context?.user && isMounted) {
+              setUser(context.user);
+            }
+          } catch (contextError) {
+            console.error('❌ Failed to get SDK context:', contextError);
           }
-        } catch (contextError) {
-          console.error('❌ Failed to get SDK context:', contextError);
+        } else {
+          console.log('ℹ️ Running outside Farcaster - SDK calls skipped');
         }
         
         if (isMounted) {
@@ -61,13 +75,15 @@ export default function MiniApp() {
       } catch (error) {
         console.error("❌ Failed to initialize mini app:", error);
         
-        // Always try to call ready() even on error
-        try {
-          console.log('🔄 Retrying SDK ready() after error...');
-          await sdk.actions.ready();
-          console.log('✅ SDK ready() retry successful');
-        } catch (readyError) {
-          console.error('❌ Failed to call ready() on retry:', readyError);
+        // Only try to call ready() if we're in Farcaster context
+        if (isFarcasterContext) {
+          try {
+            console.log('🔄 Retrying SDK ready() after error...');
+            await sdk.actions.ready();
+            console.log('✅ SDK ready() retry successful');
+          } catch (readyError) {
+            console.error('❌ Failed to call ready() on retry:', readyError);
+          }
         }
         
         if (isMounted) {
@@ -138,6 +154,15 @@ export default function MiniApp() {
           <p className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">
             Real $DEGEN Rewards
           </p>
+          
+          {/* Context Warning */}
+          {!isFarcasterContext && (
+            <div className="mt-4 p-3 bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700/30 rounded-lg">
+              <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                ℹ️ This is a preview. Open in Farcaster for full functionality.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
