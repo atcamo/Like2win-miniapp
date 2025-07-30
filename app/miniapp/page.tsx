@@ -44,15 +44,20 @@ export default function MiniApp() {
           await sdk.actions.ready();
           console.log('✅ SDK ready() called successfully - splash screen should be hidden');
           
-          // Now check if we're in Farcaster context by accessing context directly
-          const context = sdk.context;
-          console.log('👤 SDK context:', context);
-          
-          if (context?.user && isMounted) {
-            setUser(context.user);
-            setIsFarcasterContext(true);
-          } else {
-            console.log('ℹ️ No user context available');
+          // Now check if we're in Farcaster context by accessing context
+          try {
+            const context = await sdk.context;
+            console.log('👤 SDK context:', context);
+            
+            if (context?.user && isMounted) {
+              setUser(context.user);
+              setIsFarcasterContext(true);
+            } else {
+              console.log('ℹ️ No user context available');
+              setIsFarcasterContext(false);
+            }
+          } catch (contextError) {
+            console.log('ℹ️ Failed to get context:', contextError);
             setIsFarcasterContext(false);
           }
         } catch (sdkError) {
