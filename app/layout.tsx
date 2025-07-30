@@ -92,7 +92,7 @@ export async function generateMetadata(): Promise<Metadata> {
           action: {
             type: "launch_frame",
             name: "Like2Win",
-            url: baseUrl,
+            url: `${baseUrl}/miniapp`,
             splashImageUrl: process.env.NEXT_PUBLIC_SPLASH_IMAGE || `${baseUrl}/splash.png`,
             splashBackgroundColor: process.env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR || "#F59E0B",
           },
@@ -109,6 +109,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={geist.variable}>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className="bg-background font-sans">
         <FarcasterSDKInit />
         <Providers>{children}</Providers>

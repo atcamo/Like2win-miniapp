@@ -1,23 +1,28 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export function FarcasterSDKInit() {
+  const initializedRef = useRef(false);
+
   useEffect(() => {
+    // Prevent multiple initialization calls
+    if (initializedRef.current) {
+      return;
+    }
+
     const initializeSDK = async () => {
       try {
-        // Verificar si estamos en el entorno de Farcaster
         if (typeof window !== 'undefined') {
-          // Importación dinámica para evitar errores en SSR
           const { sdk } = await import('@farcaster/frame-sdk');
           
           console.log('Initializing Farcaster SDK...');
           
-          // Llamar ready() inmediatamente
           if (sdk?.actions?.ready) {
             try {
               await sdk.actions.ready();
               console.log('✅ Farcaster SDK ready() called successfully');
+              initializedRef.current = true;
             } catch (readyError) {
               console.error('❌ Error calling SDK ready():', readyError);
             }
@@ -30,9 +35,8 @@ export function FarcasterSDKInit() {
       }
     };
 
-    // Llamar inmediatamente al cargar
     initializeSDK();
   }, []);
 
-  return null; // Este componente no renderiza nada
+  return null;
 }

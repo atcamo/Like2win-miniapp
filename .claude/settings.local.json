@@ -36,7 +36,8 @@
       "Bash(gh repo create:*)",
       "Bash(npm ls:*)",
       "WebFetch(domain:onchainkit.xyz)",
-      "WebFetch(domain:docs.base.org)"
+      "WebFetch(domain:docs.base.org)",
+      "WebFetch(domain:miniapps.farcaster.xyz)"
     ],
     "deny": []
   }
