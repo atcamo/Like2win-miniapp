@@ -119,7 +119,11 @@ export class ParticipationService {
         const engagementValidation = this.validateEngagementRequirements(
           user,
           post,
-          validatedData.engagement_data || {}
+          {
+            has_liked: validatedData.engagement_data?.has_liked || false,
+            has_commented: validatedData.engagement_data?.has_commented || false,
+            has_recasted: validatedData.engagement_data?.has_recasted || false,
+          } as EngagementData
         );
 
         if (!engagementValidation.isValid) {
