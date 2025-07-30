@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SDK Test</title>
+    <meta name="fc:frame" content='{"version":"next","imageUrl":"https://like2win-miniapp.vercel.app/hero.png","button":{"title":"Launch Like2Win","action":{"type":"launch_frame","name":"Like2Win","url":"https://like2win-miniapp.vercel.app/miniapp","splashImageUrl":"https://like2win-miniapp.vercel.app/splash.png","splashBackgroundColor":"#F59E0B"}}}'/>
+    <meta name="fc:miniapp" content='{"version":"next","imageUrl":"https://like2win-miniapp.vercel.app/hero.png","button":{"title":"Launch Like2Win","action":{"type":"launch_frame","name":"Like2Win","url":"https://like2win-miniapp.vercel.app/miniapp","splashImageUrl":"https://like2win-miniapp.vercel.app/splash.png","splashBackgroundColor":"#F59E0B"}}}'/>
+</head>
+<body>
+    <h1>SDK Test Page</h1>
+    <div id="status">Loading...</div>
+    
+    <script type="module">
+        console.log('🚀 Starting SDK test...');
+        
+        try {
+            // Import SDK
+            const { sdk } = await import('https://unpkg.com/@farcaster/miniapp-sdk@latest/dist/miniapp-sdk.es.js');
+            console.log('✅ SDK imported successfully');
+            
+            // Call ready immediately
+            console.log('📞 Calling SDK ready()...');
+            await sdk.actions.ready();
+            console.log('✅ SDK ready() called successfully');
+            
+            document.getElementById('status').innerHTML = '✅ SDK Working!';
+            
+        } catch (error) {
+            console.error('❌ SDK Error:', error);
+            document.getElementById('status').innerHTML = '❌ SDK Error: ' + error.message;
+        }
+    </script>
+</body>
+</html>
