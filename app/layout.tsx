@@ -97,6 +97,20 @@ export async function generateMetadata(): Promise<Metadata> {
           },
         },
       }),
+      "fc:miniapp": JSON.stringify({
+        version: "next",
+        imageUrl: process.env.NEXT_PUBLIC_APP_HERO_IMAGE || imageUrl,
+        button: {
+          title: `Launch Like2Win`,
+          action: {
+            type: "launch_frame",
+            name: "Like2Win",
+            url: `${baseUrl}/miniapp`,
+            splashImageUrl: process.env.NEXT_PUBLIC_SPLASH_IMAGE || `${baseUrl}/splash.png`,
+            splashBackgroundColor: process.env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR || "#F59E0B",
+          },
+        },
+      }),
     },
   };
 }
