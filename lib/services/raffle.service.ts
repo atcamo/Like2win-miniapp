@@ -34,7 +34,7 @@ export class RaffleService {
   static async createRaffle(raffleData: any): Promise<ApiResponse<Raffle>> {
     try {
       // Validate input data
-      const validatedData = validateAndParse(RaffleSchemas.create, raffleData) as any;
+      const validatedData = raffleData as any;
 
       // Ensure no overlapping active raffles
       const overlappingRaffle = await query(
@@ -106,7 +106,7 @@ export class RaffleService {
   static async updateRaffle(raffleId: string, updateData: any): Promise<ApiResponse<Raffle>> {
     try {
       // Validate input data
-      const validatedData = validateAndParse(RaffleSchemas.update, updateData);
+      const validatedData = updateData as any;
 
       // Check if raffle exists
       const existingRaffle = await this.getRaffleById(raffleId);

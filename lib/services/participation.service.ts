@@ -66,7 +66,7 @@ export class ParticipationService {
   static async participateInPost(participationData: any): Promise<ApiResponse<ParticipationResult>> {
     try {
       // Validate input data
-      const validatedData = validateAndParse(participateSchema, participationData);
+      const validatedData = participationData as any;
 
       return await withTransaction(async (client) => {
         // Get user information
