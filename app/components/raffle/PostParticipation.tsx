@@ -62,7 +62,7 @@ export function PostParticipation({
     has_recasted: Boolean(post.user_participation?.has_recasted),
   });
 
-  const isCompleted = post.user_participation?.engagement_completed_at;
+  const isCompleted = Boolean(post.user_participation?.engagement_completed_at);
   const ticketsEarned = post.user_participation?.tickets_earned || 0;
 
   // Determine what actions are required
