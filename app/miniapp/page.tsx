@@ -25,48 +25,44 @@ export default function MiniApp() {
     let isMounted = true;
 
     const initializeMiniApp = async () => {
+      console.log('🚀 Initializing MiniApp...');
+      console.log('🔍 Current URL:', window.location.href);
+      console.log('🔍 User Agent:', navigator.userAgent);
+      
+      // ALWAYS call ready() first, even if it fails
       try {
-        console.log('🚀 Initializing MiniApp...');
-        console.log('🔍 Current URL:', window.location.href);
-        console.log('🔍 User Agent:', navigator.userAgent);
-        
-        // Call ready() IMMEDIATELY - this is critical for Farcaster
         console.log('📞 Calling SDK ready() immediately...');
-        await sdk.actions.ready();
-        console.log('✅ SDK ready() called successfully - splash screen should be hidden');
-        
-        // Now load interface
-        if (!isMounted) return;
+        if (typeof sdk?.actions?.ready === 'function') {
+          await sdk.actions.ready();
+          console.log('✅ SDK ready() called successfully');
+        } else {
+          console.error('❌ SDK ready() function not available');
+        }
+      } catch (readyError) {
+        console.error('❌ Error calling SDK ready():', readyError);
+      }
+      
+      // Now show the interface regardless of SDK success/failure
+      if (isMounted) {
         setIsLoading(false);
         
-        // Get context after ready() call
+        // Try to get context
         try {
           const context = await sdk.context;
           console.log('👤 SDK context:', context);
           
-          if (context?.user && isMounted) {
+          if (context?.user) {
             setUser(context.user);
             setIsFarcasterContext(true);
-          } else {
-            console.log('ℹ️ No user context available');
-            setIsFarcasterContext(false);
           }
         } catch (contextError) {
           console.log('ℹ️ Failed to get context:', contextError);
           setIsFarcasterContext(false);
         }
         
-        if (isMounted) {
-          setTimeout(() => {
-            if (isMounted) setIsVisible(true);
-          }, 100);
-        }
-      } catch (error) {
-        console.error("❌ Failed to initialize mini app:", error);
-        
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        setTimeout(() => {
+          if (isMounted) setIsVisible(true);
+        }, 100);
       }
     };
 
