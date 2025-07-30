@@ -21,49 +21,68 @@ export default function MiniApp() {
   const router = useRouter();
 
   useEffect(() => {
+    let isMounted = true;
+
     const initializeMiniApp = async () => {
       try {
-        console.log('Initializing MiniApp...');
+        console.log('🚀 Initializing MiniApp...');
         
-        // Llamar ready() inmediatamente para evitar splash screen
+        // Call ready() immediately - this is critical for Farcaster
+        console.log('📞 Calling SDK ready()...');
         if (sdk?.actions?.ready) {
           await sdk.actions.ready();
-          console.log('SDK ready() called successfully');
+          console.log('✅ SDK ready() called successfully');
         } else {
-          console.error('SDK actions.ready() not available');
+          console.error('❌ SDK actions.ready() not available');
+          throw new Error('SDK ready() method not available');
         }
         
-        // Initialize Farcaster SDK context
+        if (!isMounted) return;
+        
+        // Get user context after ready() call
         try {
           const context = await sdk.context;
-          console.log('SDK context:', context);
-          if (context?.user) {
+          console.log('👤 SDK context:', context);
+          if (context?.user && isMounted) {
             setUser(context.user);
           }
         } catch (contextError) {
-          console.error('Failed to get SDK context:', contextError);
+          console.error('❌ Failed to get SDK context:', contextError);
         }
         
-        setIsLoading(false);
-        setTimeout(() => setIsVisible(true), 100);
+        if (isMounted) {
+          setIsLoading(false);
+          setTimeout(() => {
+            if (isMounted) setIsVisible(true);
+          }, 100);
+        }
       } catch (error) {
-        console.error("Failed to initialize mini app:", error);
+        console.error("❌ Failed to initialize mini app:", error);
         
-        // Intentar llamar ready() incluso si hay errores
+        // Always try to call ready() even on error
         try {
+          console.log('🔄 Retrying SDK ready() after error...');
           if (sdk?.actions?.ready) {
             await sdk.actions.ready();
-            console.log('SDK ready() called after error');
+            console.log('✅ SDK ready() retry successful');
+          } else {
+            console.error('❌ SDK actions.ready() not available on retry');
           }
         } catch (readyError) {
-          console.error('Failed to call ready() after error:', readyError);
+          console.error('❌ Failed to call ready() on retry:', readyError);
         }
         
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     initializeMiniApp();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleStartParticipating = () => {

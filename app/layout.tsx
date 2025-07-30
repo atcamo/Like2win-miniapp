@@ -4,7 +4,6 @@ import "./theme.css";
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { Providers } from "./providers";
-import { FarcasterSDKInit } from "./components/FarcasterSDKInit";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -113,7 +112,6 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="bg-background font-sans">
-        <FarcasterSDKInit />
         <Providers>{children}</Providers>
       </body>
     </html>
