@@ -30,41 +30,31 @@ export default function MiniApp() {
         console.log('🔍 Current URL:', window.location.href);
         console.log('🔍 User Agent:', navigator.userAgent);
         
-        // Check if we're in Farcaster context
-        const isInFarcaster = window.location.href.includes('farcaster.xyz') || 
-                             window.location.href.includes('warpcast.com') ||
-                             navigator.userAgent.includes('Farcaster') ||
-                             window.parent !== window; // Check if in iframe
-        
-        console.log('🔍 Is in Farcaster context:', isInFarcaster);
-        setIsFarcasterContext(isInFarcaster);
-        
         // Load interface first
         setIsLoading(false);
         
-        if (isInFarcaster) {
-          // Small delay to ensure DOM is fully rendered
-          await new Promise(resolve => setTimeout(resolve, 50));
-          
-          if (!isMounted) return;
-          
-          // Now call ready() after interface is loaded
+        // Small delay to ensure DOM is fully rendered
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        if (!isMounted) return;
+        
+        // Always call ready() - let the SDK handle if we're in Farcaster or not
+        try {
           console.log('📞 Calling SDK ready()...');
           await sdk.actions.ready();
           console.log('✅ SDK ready() called successfully - splash screen should be hidden');
           
-          // Get user context after ready() call
-          try {
-            const context = await sdk.context;
-            console.log('👤 SDK context:', context);
-            if (context?.user && isMounted) {
-              setUser(context.user);
-            }
-          } catch (contextError) {
-            console.error('❌ Failed to get SDK context:', contextError);
+          // Now check if we're in Farcaster context by trying to get context
+          const context = await sdk.context;
+          console.log('👤 SDK context:', context);
+          
+          if (context?.user && isMounted) {
+            setUser(context.user);
+            setIsFarcasterContext(true);
           }
-        } else {
-          console.log('ℹ️ Running outside Farcaster - SDK calls skipped');
+        } catch (sdkError) {
+          console.log('ℹ️ SDK not available or running outside Farcaster:', sdkError);
+          setIsFarcasterContext(false);
         }
         
         if (isMounted) {
@@ -75,15 +65,13 @@ export default function MiniApp() {
       } catch (error) {
         console.error("❌ Failed to initialize mini app:", error);
         
-        // Only try to call ready() if we're in Farcaster context
-        if (isFarcasterContext) {
-          try {
-            console.log('🔄 Retrying SDK ready() after error...');
-            await sdk.actions.ready();
-            console.log('✅ SDK ready() retry successful');
-          } catch (readyError) {
-            console.error('❌ Failed to call ready() on retry:', readyError);
-          }
+        // Always try to call ready() even on error
+        try {
+          console.log('🔄 Retrying SDK ready() after error...');
+          await sdk.actions.ready();
+          console.log('✅ SDK ready() retry successful');
+        } catch (readyError) {
+          console.error('❌ Failed to call ready() on retry:', readyError);
         }
         
         if (isMounted) {
