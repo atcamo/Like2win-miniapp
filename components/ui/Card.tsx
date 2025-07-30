@@ -136,12 +136,12 @@ export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
     
     return (
       <Heading
-        ref={ref as any}
+        ref={ref}
         className={cn(
           'text-2xl font-semibold leading-none tracking-tight',
           className
         )}
-        {...props}
+        {...(props as any)}
       >
         {children}
       </Heading>

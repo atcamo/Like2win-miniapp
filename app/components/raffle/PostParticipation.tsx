@@ -57,9 +57,9 @@ export function PostParticipation({
 }: PostParticipationProps) {
   const { participate, isParticipating, participationError } = useParticipation();
   const [localEngagement, setLocalEngagement] = useState({
-    has_liked: post.user_participation?.has_liked || false,
-    has_commented: post.user_participation?.has_commented || false,
-    has_recasted: post.user_participation?.has_recasted || false,
+    has_liked: Boolean(post.user_participation?.has_liked),
+    has_commented: Boolean(post.user_participation?.has_commented),
+    has_recasted: Boolean(post.user_participation?.has_recasted),
   });
 
   const isCompleted = post.user_participation?.engagement_completed_at;

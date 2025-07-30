@@ -140,7 +140,7 @@ export function UserProfile({ className = '', showFullProfile = false }: UserPro
           </div>
           <div className="text-center p-3 bg-green-50 rounded-lg">
             <div className="text-2xl font-bold text-green-600">
-              {user.total_winnings ? parseFloat(user.total_winnings).toFixed(2) : '0.00'}
+              {(user as any)?.total_winnings ? parseFloat((user as any).total_winnings).toFixed(2) : '0.00'}
             </div>
             <div className="text-sm text-gray-600">$DEGEN Won</div>
           </div>

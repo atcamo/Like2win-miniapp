@@ -462,7 +462,7 @@ export class MonitoringService {
       
     } catch (error) {
       await this.recordMetric('like2win_api_health', 0);
-      await this.triggerAlert('APIHealthCheckError', { error: error.message });
+      await this.triggerAlert('APIHealthCheckError', { error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
   
@@ -481,7 +481,7 @@ export class MonitoringService {
       
     } catch (error) {
       await this.recordMetric('like2win_database_health', 0);
-      await this.triggerAlert('DatabaseHealthCheckFailed', { error: error.message });
+      await this.triggerAlert('DatabaseHealthCheckFailed', { error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
   
@@ -497,7 +497,9 @@ export class MonitoringService {
     for (const service of services) {
       try {
         const start = Date.now();
-        const response = await fetch(service.url, { timeout: 10000 });
+        const response = await fetch(service.url, { 
+          signal: AbortSignal.timeout(10000)
+        });
         const duration = Date.now() - start;
         
         const isHealthy = response.ok;
@@ -524,7 +526,7 @@ export class MonitoringService {
         
         await this.triggerAlert('ExternalServiceError', {
           service: service.name,
-          error: error.message,
+          error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }

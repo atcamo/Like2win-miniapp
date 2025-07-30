@@ -25,7 +25,7 @@ interface LoginModalProps {
 
 export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
   const { loginWithWallet, loginWithFarcaster, isLoading, error } = useAuth();
-  const { isReady: isMiniKitReady, user: miniKitUser } = useMiniKitSetup();
+  const { isReady: isMiniKitReady } = useMiniKitSetup();
   
   const [selectedMethod, setSelectedMethod] = useState<'wallet' | 'farcaster' | null>(null);
   const [fidInput, setFidInput] = useState('');
@@ -46,14 +46,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
     try {
       setSelectedMethod('farcaster');
       
-      if (isMiniKitReady && miniKitUser?.fid) {
-        // Use MiniKit user data
-        await loginWithFarcaster(miniKitUser.fid, {
-          username: miniKitUser.username,
-          display_name: miniKitUser.displayName,
-          pfp_url: miniKitUser.pfpUrl,
-        });
-      } else if (fidInput) {
+      if (fidInput) {
         // Use manual FID input
         const fid = parseInt(fidInput);
         if (isNaN(fid) || fid <= 0) {
@@ -61,7 +54,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
         }
         await loginWithFarcaster(fid);
       } else {
-        throw new Error('Please enter your Farcaster FID or use MiniKit');
+        throw new Error('Please enter your Farcaster FID');
       }
       
       onSuccess?.();
@@ -104,44 +97,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
           </div>
         )}
 
-        {/* MiniKit Option (if available) */}
-        {isMiniKitReady && miniKitUser && (
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex items-center gap-3 mb-3">
-              <CheckCircleIcon className="w-5 h-5 text-blue-500" />
-              <span className="font-medium text-blue-900">MiniKit Detected</span>
-            </div>
-            <div className="flex items-center gap-3 mb-4">
-              {miniKitUser.pfpUrl && (
-                <img 
-                  src={miniKitUser.pfpUrl} 
-                  alt="Profile" 
-                  className="w-8 h-8 rounded-full"
-                />
-              )}
-              <div>
-                <div className="font-medium text-blue-900">
-                  {miniKitUser.displayName || miniKitUser.username}
-                </div>
-                <div className="text-sm text-blue-600">FID: {miniKitUser.fid}</div>
-              </div>
-            </div>
-            <Button
-              onClick={handleFarcasterLogin}
-              disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              {isLoading && selectedMethod === 'farcaster' ? (
-                <>
-                  <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
-                  Connecting...
-                </>
-              ) : (
-                'Connect with MiniKit'
-              )}
-            </Button>
-          </div>
-        )}
+        {/* MiniKit Option - Currently disabled */}
 
         {/* Manual Farcaster Login */}
         <div className="space-y-4">

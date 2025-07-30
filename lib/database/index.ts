@@ -61,7 +61,10 @@ export async function query<T = any>(
       });
     }
     
-    return result;
+    return {
+      ...result,
+      rowCount: result.rowCount ?? 0
+    };
   } catch (error) {
     console.error('Database query error:', error);
     throw error;

@@ -58,10 +58,10 @@ export const appConfig = {
   debug: env.DEBUG,
   useMockData: env.USE_MOCK_DATA,
   
-  // URLs and assets
-  heroImage: env.NEXT_PUBLIC_APP_HERO_IMAGE,
-  splashImage: env.NEXT_PUBLIC_SPLASH_IMAGE,
-  splashBackgroundColor: env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR,
+  // URLs and assets (optional)
+  heroImage: process.env.NEXT_PUBLIC_APP_HERO_IMAGE,
+  splashImage: process.env.NEXT_PUBLIC_SPLASH_IMAGE,
+  splashBackgroundColor: process.env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR,
 } as const;
 
 /**

@@ -42,11 +42,6 @@ function createPool(): Pool {
     // Pool configuration
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 5000,
-    
-    // Error handling
-    onError: (err) => {
-      console.error('Database pool error:', err);
-    },
   };
 
   // Use DATABASE_URL if provided (common in cloud environments)

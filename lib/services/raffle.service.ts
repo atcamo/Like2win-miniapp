@@ -120,7 +120,7 @@ export class RaffleService {
 
       // Build dynamic update query
       const updateFields = Object.keys(validatedData).filter(
-        key => validatedData[key] !== undefined
+        key => (validatedData as Record<string, any>)[key] !== undefined
       );
 
       if (updateFields.length === 0) {
@@ -134,7 +134,7 @@ export class RaffleService {
         .map((field, index) => `${field} = $${index + 2}`)
         .join(', ');
 
-      const values = [raffleId, ...updateFields.map(field => validatedData[field])];
+      const values = [raffleId, ...updateFields.map(field => (validatedData as Record<string, any>)[field])];
 
       const result = await query<Raffle>(
         `UPDATE raffles 

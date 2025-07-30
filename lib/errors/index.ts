@@ -364,15 +364,15 @@ export class ErrorHandler {
     const message = error.message.toLowerCase();
 
     if (message.includes('unique constraint') || message.includes('duplicate')) {
-      return new ConflictError('Resource already exists', requestId);
+      return new DatabaseError('Resource already exists', error, requestId);
     }
 
     if (message.includes('foreign key constraint')) {
-      return new ValidationError('Invalid reference to related resource', undefined, requestId);
+      return new DatabaseError('Invalid reference to related resource', error, requestId);
     }
 
     if (message.includes('not null constraint')) {
-      return new ValidationError('Required field is missing', undefined, requestId);
+      return new DatabaseError('Required field is missing', error, requestId);
     }
 
     if (message.includes('connection') || message.includes('timeout')) {
