@@ -37,7 +37,8 @@
       "Bash(npm ls:*)",
       "WebFetch(domain:onchainkit.xyz)",
       "WebFetch(domain:docs.base.org)",
-      "WebFetch(domain:miniapps.farcaster.xyz)"
+      "WebFetch(domain:miniapps.farcaster.xyz)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": []
   }

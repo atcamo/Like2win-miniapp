@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { sdk } from "@farcaster/frame-sdk";
+import { sdk } from "@farcaster/miniapp-sdk";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Logo } from "../components/ui/Logo";
@@ -26,18 +26,21 @@ export default function MiniApp() {
     const initializeMiniApp = async () => {
       try {
         console.log('🚀 Initializing MiniApp...');
+        console.log('🔍 Current URL:', window.location.href);
+        console.log('🔍 User Agent:', navigator.userAgent);
         
-        // Call ready() immediately - this is critical for Farcaster
-        console.log('📞 Calling SDK ready()...');
-        if (sdk?.actions?.ready) {
-          await sdk.actions.ready();
-          console.log('✅ SDK ready() called successfully');
-        } else {
-          console.error('❌ SDK actions.ready() not available');
-          throw new Error('SDK ready() method not available');
-        }
+        // Load interface first, then call ready()
+        setIsLoading(false);
+        
+        // Small delay to ensure DOM is fully rendered
+        await new Promise(resolve => setTimeout(resolve, 50));
         
         if (!isMounted) return;
+        
+        // Now call ready() after interface is loaded
+        console.log('📞 Calling SDK ready()...');
+        await sdk.actions.ready();
+        console.log('✅ SDK ready() called successfully - splash screen should be hidden');
         
         // Get user context after ready() call
         try {
@@ -51,7 +54,6 @@ export default function MiniApp() {
         }
         
         if (isMounted) {
-          setIsLoading(false);
           setTimeout(() => {
             if (isMounted) setIsVisible(true);
           }, 100);
@@ -62,12 +64,8 @@ export default function MiniApp() {
         // Always try to call ready() even on error
         try {
           console.log('🔄 Retrying SDK ready() after error...');
-          if (sdk?.actions?.ready) {
-            await sdk.actions.ready();
-            console.log('✅ SDK ready() retry successful');
-          } else {
-            console.error('❌ SDK actions.ready() not available on retry');
-          }
+          await sdk.actions.ready();
+          console.log('✅ SDK ready() retry successful');
         } catch (readyError) {
           console.error('❌ Failed to call ready() on retry:', readyError);
         }
