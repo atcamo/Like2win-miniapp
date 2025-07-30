@@ -25,12 +25,22 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/miniapp',
         headers: [
+          // Allow embedding in Farcaster iframes
           {
             key: 'X-Frame-Options',
-            value: 'ALLOWALL',
+            value: 'SAMEORIGIN',
           },
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'self' https://*.farcaster.xyz https://*.warpcast.com https://*.vercel.app;",
+          },
+        ],
+      },
+      {
+        source: '/(.*)',
+        headers: [
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
